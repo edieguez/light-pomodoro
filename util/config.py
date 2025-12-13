@@ -1,4 +1,5 @@
 """Pomodoro utility functions"""
+
 import json
 
 from pomodoro.models import SmartBulbConfig, PomodoroConfig
