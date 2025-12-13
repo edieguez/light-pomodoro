@@ -1,0 +1,21 @@
+{
+  "smart_bulb": {
+    "device_id": "YOUR_DEVICE_ID",
+    "address": "YOUR_DEVICE_IP_ADDRESS",
+    "local_key": "YOUR_DEVICE_LOCAL_KEY",
+    "version": 3.4
+  },
+  "pomodoro": {
+    "duration": 25,
+    "color": [0, 0, 255],
+    "short_break": {
+      "duration": 5,
+      "color": [0, 255, 0]
+    },
+    "long_break": {
+      "duration": 15,
+      "color": [128, 0, 128]
+    },
+    "cycles_before_long_break": 4
+  }
+}
