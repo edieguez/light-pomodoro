@@ -21,75 +21,97 @@ class Pomodoro:
 
     def start(self):
         """Starts the Pomodoro timer."""
-        print("🍅 Pomodoro Timer Started!")
-        print(f"Smart Bulb Status: {json.dumps(self.smart_bulb.status(), indent=2)}\n")
+        print(f"Smart Bulb Status: {json.dumps(self.smart_bulb.status(), indent=2)}")
+        print("🍅 Pomodoro timer started")
+        print("\n")  # Reserve space for display
 
         cycle_count = 0
+        pomodoro_count = 0
 
         try:
             while True:
                 cycle_count += 1
-                print(f"\n{'='*50}")
-                print(f"Cycle {cycle_count}")
-                print(f"{'='*50}")
 
                 # Work session
-                self._work_session()
+                self._work_session(cycle_count, pomodoro_count)
 
                 # Determine break type
                 if cycle_count % self.pomodoro_config.cycles_before_long_break == 0:
                     # Long break after completing the configured number of cycles
-                    self._long_break()
+                    self._long_break(cycle_count, pomodoro_count)
+                    pomodoro_count += 1
+                    cycle_count = 0  # Reset cycle count after long break
                 else:
                     # Short break
-                    self._short_break()
+                    self._short_break(cycle_count, pomodoro_count)
 
         except KeyboardInterrupt:
-            print("\n\n🛑 Pomodoro Timer stopped by user.")
+            # Move cursor to below the display area
+            print("\n")
+            print("🛑 Pomodoro timer stopped by user")
             self.smart_bulb.turn_off()
-            print("Smart bulb turned off. Goodbye!")
 
-    def _work_session(self):
+    def _work_session(self, cycle: int, pomodoro_count: int):
         """Execute a work session with the configured duration and color."""
-        print(f"\n⏰ Work Session - {self.pomodoro_config.duration} minutes")
 
-        self.smart_bulb.set_colour(*self.pomodoro_config.color)
-        self._countdown(self.pomodoro_config.duration)
+        self.smart_bulb.set_colour(*self.pomodoro_config.color, True)
+        self.smart_bulb.set_brightness(85)
 
-        print("✅ Work session completed!")
+        self._countdown(
+            self.pomodoro_config.duration,
+            f"⏰ Work session | 🍅 {pomodoro_count:02d} - 🔄 {cycle:02d}/{self.pomodoro_config.cycles_before_long_break:02d}",
+            "✅ Work session completed!"
+        )
 
-    def _short_break(self):
+    def _short_break(self, cycle: int, pomodoro_count: int):
         """Execute a short break with the configured duration and color."""
-        print(f"\n☕ Short Break - {self.pomodoro_config.short_break.duration} minutes")
 
-        self.smart_bulb.set_colour(*self.pomodoro_config.short_break.color)
-        self._countdown(self.pomodoro_config.short_break.duration)
+        self.smart_bulb.set_colour(*self.pomodoro_config.short_break.color, True)
+        self.smart_bulb.set_brightness(70)
 
-        print("✅ Short break completed!")
+        self._countdown(
+            self.pomodoro_config.short_break.duration,
+            f"☕ Short break | 🍅 {pomodoro_count:02d} - 🔄 {cycle:02d}/{self.pomodoro_config.cycles_before_long_break:02d}",
+            "✅ Short break completed!"
+        )
 
-    def _long_break(self):
+    def _long_break(self, cycle: int, pomodoro_count: int):
         """Execute a long break with the configured duration and color."""
-        print(f"\n🌴 Long Break - {self.pomodoro_config.long_break.duration} minutes")
 
-        self.smart_bulb.set_colour(*self.pomodoro_config.long_break.color)
-        self._countdown(self.pomodoro_config.long_break.duration)
+        self.smart_bulb.set_colour(*self.pomodoro_config.long_break.color, True)
+        self.smart_bulb.set_brightness(55)
 
-        print("✅ Long break completed!")
+        self._countdown(
+            self.pomodoro_config.long_break.duration,
+            f"🌴 Long break | 🍅 {pomodoro_count:02d} - 🔄 {cycle:02d}/{self.pomodoro_config.cycles_before_long_break:02d}",
+            "✅ Long break completed!"
+        )
 
-    def _countdown(self, duration_minutes: int):
+    def _countdown(self, duration_minutes: int, phase_label: str, completion_msg: str):
         """
-        Countdown timer that displays remaining time.
+        Countdown timer that displays remaining time in place.
 
         Args:
             duration_minutes: Duration in minutes
+            phase_label: Label for the current phase
+            completion_msg: Message to display when completed
         """
         total_seconds = duration_minutes * 60
+
+        # Move cursor up 1 line to the display area
+        print("\033[1A", end="")
 
         for remaining in range(total_seconds, 0, -1):
             minutes, seconds = divmod(remaining, 60)
             time_str = f"{minutes:02d}:{seconds:02d}"
-            print(f"\r⏱️  {time_str} remaining", end="", flush=True)
+
+            # Clear and update display (single line)
+            print("\033[K" + f"{phase_label} | ⏱️ {time_str}", end="", flush=True)
+            print("\r", end="")  # Return to start of line
+
             time.sleep(1)
 
-        print("\r" + " " * 50, end="")  # Clear the line
-        print("\r", end="")
+        # Display completion message
+        print("\033[K" + completion_msg, flush=True)
+
+        time.sleep(2)  # Show completion message briefly
