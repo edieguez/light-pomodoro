@@ -55,7 +55,7 @@ class Pomodoro:
         """Execute a work session with the configured duration and color."""
 
         self.smart_bulb.set_colour(*self.pomodoro_config.color, True)
-        self.smart_bulb.set_brightness(85)
+        self.smart_bulb.set_brightness(self.pomodoro_config.brightness)
 
         self._countdown(
             self.pomodoro_config.duration,
@@ -67,7 +67,7 @@ class Pomodoro:
         """Execute a short break with the configured duration and color."""
 
         self.smart_bulb.set_colour(*self.pomodoro_config.short_break.color, True)
-        self.smart_bulb.set_brightness(70)
+        self.smart_bulb.set_brightness(self.pomodoro_config.short_break.brightness)
 
         self._countdown(
             self.pomodoro_config.short_break.duration,
@@ -79,7 +79,7 @@ class Pomodoro:
         """Execute a long break with the configured duration and color."""
 
         self.smart_bulb.set_colour(*self.pomodoro_config.long_break.color, True)
-        self.smart_bulb.set_brightness(55)
+        self.smart_bulb.set_brightness(self.pomodoro_config.long_break.brightness)
 
         self._countdown(
             self.pomodoro_config.long_break.duration,
