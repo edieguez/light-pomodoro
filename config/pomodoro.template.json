@@ -7,14 +7,20 @@
   },
   "pomodoro": {
     "duration": 25,
-    "color": [0, 0, 255],
+    "color": [255, 255, 255],
+    "saturation": 1000,
+    "brightness": 1000,
     "short_break": {
       "duration": 5,
-      "color": [0, 255, 0]
+      "color": [0, 0, 0],
+      "saturation": 1000,
+      "brightness": 1000
     },
     "long_break": {
       "duration": 15,
-      "color": [128, 0, 128]
+      "color": [0, 0, 0],
+      "saturation": 1000,
+      "brightness": 1000
     },
     "cycles_before_long_break": 4
   }
