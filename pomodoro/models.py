@@ -15,8 +15,9 @@ class SmartBulbConfig(BaseModel):
 class Break(BaseModel):
     """Model representing a break period in a Pomodoro timer."""
     duration: int = Field(..., gt=0, description="Duration in minutes")
-    color: List[int] = Field(..., description="RGB color [0–255, 0–255, 0–255]")
-    brightness: int = Field(..., ge=0, le=1000)
+    color: List[int] = Field(..., description="RGB color [0-255, 0-255, 0-255]")
+    saturation: int = Field(..., ge=10, le=1000)
+    brightness: int = Field(..., ge=10, le=1000)
 
     @field_validator("color")
     @classmethod
@@ -37,7 +38,7 @@ class PomodoroConfig(BaseModel):
     """Model representing a Pomodoro timer configuration."""
     duration: int = Field(..., gt=0, description="Work duration in minutes")
     color: List[int] = Field(..., description="RGB color [0-255, 0-255, 0-255]")
-    saturation: int = Field(..., ge=0, le=1000)
+    saturation: int = Field(..., ge=10, le=1000)
     brightness: int = Field(..., ge=10, le=1000)
     short_break: Break
     long_break: Break
