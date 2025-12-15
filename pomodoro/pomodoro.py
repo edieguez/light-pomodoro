@@ -54,8 +54,33 @@ class Pomodoro:
     def _work_session(self, cycle: int, pomodoro_count: int):
         """Execute a work session with the configured duration and color."""
 
-        self.smart_bulb.set_colour(*self.pomodoro_config.color, True)
-        self.smart_bulb.set_brightness(self.pomodoro_config.brightness)
+        r, g, b = self.pomodoro_config.color
+
+        if r == g == b == 255:
+            # White mode
+            self.smart_bulb.set_multiple_values({
+                "20": True,
+                "21": "white",
+                "22": self.pomodoro_config.brightness
+            })
+        elif r == g == b == 0:
+            # There is not a pure black mode, so we turn off the bulb
+            self.smart_bulb.set_multiple_values({
+                "20": False
+            })
+        else:
+            # Colour mode
+            hsv = self._encode_colour(
+                self._rgb_to_hue(r, g, b),
+                self.pomodoro_config.saturation,
+                self.pomodoro_config.brightness
+            )
+
+            self.smart_bulb.set_multiple_values({
+                "20": True,
+                "21": "colour",
+                "24": hsv
+            })
 
         self._countdown(
             self.pomodoro_config.duration,
@@ -115,3 +140,24 @@ class Pomodoro:
         print("\033[K" + completion_msg, flush=True)
 
         time.sleep(2)  # Show completion message briefly
+
+    def _rgb_to_hue(self, r: int, g: int, b: int) -> int:
+        r1, g1, b1 = r / 255, g / 255, b / 255
+        cmax = max(r1, g1, b1)
+        cmin = min(r1, g1, b1)
+        delta = cmax - cmin
+
+        if delta == 0:
+            return 0
+
+        if cmax == r1:
+            h = 60 * (((g1 - b1) / delta) % 6)
+        elif cmax == g1:
+            h = 60 * (((b1 - r1) / delta) + 2)
+        else:
+            h = 60 * (((r1 - g1) / delta) + 4)
+
+        return int(round(h))
+
+    def _encode_colour(self, h: int, s: int, v: int) -> str:
+        return f"{h:04x}{s:04x}{v:04x}"
