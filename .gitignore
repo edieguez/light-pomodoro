@@ -209,3 +209,4 @@ config/pomodoro.json
 .vscode
 wizard
 .DS_Store
+*.bck

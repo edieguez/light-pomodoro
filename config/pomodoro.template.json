@@ -1,10 +1,20 @@
 {
-  "smart_bulb": {
-    "device_id": "YOUR_DEVICE_ID",
-    "address": "YOUR_DEVICE_IP_ADDRESS",
-    "local_key": "YOUR_DEVICE_LOCAL_KEY",
-    "version": 3.4
-  },
+  "smart_bulbs": [
+    {
+      "name": "Desk Lamp",
+      "device_id": "YOUR_DEVICE_ID",
+      "address": "YOUR_DEVICE_IP_ADDRESS",
+      "local_key": "YOUR_DEVICE_LOCAL_KEY",
+      "version": 3.4
+    },
+    {
+      "name": "Bedside Lamp",
+      "device_id": "ANOTHER_DEVICE_ID",
+      "address": "ANOTHER_DEVICE_IP_ADDRESS",
+      "local_key": "ANOTHER_DEVICE_LOCAL_KEY",
+      "version": 3.4
+    }
+  ],
   "pomodoro": {
     "duration": 25,
     "color": [255, 255, 255],

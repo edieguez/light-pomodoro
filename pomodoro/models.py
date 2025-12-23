@@ -6,6 +6,7 @@ from typing import List
 
 class SmartBulbConfig(BaseModel):
     """Model representing a smart bulb configuration."""
+    name: str = Field(..., min_length=1, max_length=32)
     device_id: str
     address: str
     local_key: str
