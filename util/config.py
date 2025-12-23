@@ -17,7 +17,28 @@ def parse_args() -> Namespace:
         default=None,
         help=(
             "Name of the smart bulb to use. "
-            "If not provided, the first bulb in the configuration file will be used."
+            "Defaults to the first smart bulb found in the configuration file."
+        ),
+    )
+    parser.add_argument(
+        "-p",
+        "--pomodoro",
+        type=str,
+        default=None,
+        help=(
+            "Pomodoro configuration to use. "
+            "This affects work duration, break duration and cycle count. "
+            "Defaults to the first Pomodoro found in the configuration file."
+        ),
+    )
+    parser.add_argument(
+        "-t",
+        "--theme",
+        type=str,
+        default=None,
+        help=(
+            "Theme to use for the smart bulb colors. "
+            "Defaults to the first theme found in the configuration file."
         ),
     )
 
