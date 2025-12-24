@@ -1,6 +1,6 @@
 """Pomodoro utility functions"""
 
-import json
+import yaml
 from argparse import ArgumentParser, Namespace
 
 from pomodoro.models import SmartBulbConfig, PomodoroConfig, ThemeConfig
@@ -49,7 +49,7 @@ class Config:
 
     def __init__(self, file_path: str) -> None:
         with open(file_path, "r", encoding="utf-8") as file:
-            self.raw_config = json.load(file)
+            self.raw_config = yaml.safe_load(file)
 
     def get_smart_bulb(self, bulb_name: str | None) -> SmartBulbConfig:
         """Retrieve a SmartBulbConfig by name from the configuration file."""

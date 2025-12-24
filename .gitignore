@@ -205,7 +205,7 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
-config/pomodoro.json
+config/pomodoro.yaml
 .vscode
 wizard
 .DS_Store
