@@ -3,7 +3,7 @@
 import json
 from argparse import ArgumentParser, Namespace
 
-from pomodoro.models import SmartBulbConfig, PomodoroConfig
+from pomodoro.models import SmartBulbConfig, PomodoroConfig, ThemeConfig
 
 
 def parse_args() -> Namespace:
@@ -67,6 +67,34 @@ class Config:
 
         raise ValueError(f"Smart bulb with name '{bulb_name}' not found.")
 
-    def get_pomodoro(self) -> PomodoroConfig:
+    def get_pomodoro(self, pomodoro_name: str | None) -> PomodoroConfig:
         """Retrieve the PomodoroConfig from the configuration file."""
-        return PomodoroConfig(**self.raw_config.get("pomodoro"))
+        available_pomodoros = self.raw_config.get("pomodoros", [])
+
+        if not available_pomodoros:
+            raise ValueError("No pomodoro configurations found in configuration file.")
+
+        if pomodoro_name is None:
+            return PomodoroConfig(**available_pomodoros[0])
+
+        for pomodoro in available_pomodoros:
+            if pomodoro.get("name").lower() == pomodoro_name.lower():
+                return PomodoroConfig(**pomodoro)
+
+        raise ValueError(f"Pomodoro configuration with name '{pomodoro_name}' not found.")
+
+    def get_theme(self, theme_name: str | None) -> ThemeConfig:
+        """Retrieve a theme configuration by name from the configuration file."""
+        available_themes = self.raw_config.get("themes", [])
+
+        if not available_themes:
+            raise ValueError("No themes found in configuration file.")
+
+        if theme_name is None:
+            return ThemeConfig(**available_themes[0])
+
+        for theme in available_themes:
+            if theme.get("name").lower() == theme_name.lower():
+                return ThemeConfig(**theme)
+
+        raise ValueError(f"Theme with name '{theme_name}' not found.")

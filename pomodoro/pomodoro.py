@@ -5,13 +5,13 @@ import time
 from tinytuya import BulbDevice
 
 import util.payload as payload_utils
-from pomodoro.models import PomodoroConfig, SmartBulbConfig
+from pomodoro.models import PomodoroConfig, SmartBulbConfig, ThemeConfig
 
 
 class Pomodoro:
     """Pomodoro application class"""
 
-    def __init__(self, smart_bulb_config: SmartBulbConfig, pomodoro_config: PomodoroConfig):
+    def __init__(self, smart_bulb_config: SmartBulbConfig, pomodoro_config: PomodoroConfig, theme_config: ThemeConfig):
         self.smart_bulb: BulbDevice = BulbDevice(
             dev_id=smart_bulb_config.device_id,
             address=smart_bulb_config.address,
@@ -19,11 +19,13 @@ class Pomodoro:
             version=smart_bulb_config.version,
         )
         self.pomodoro_config: PomodoroConfig = pomodoro_config
+        self.theme_config: ThemeConfig = theme_config
 
     def start(self):
         """Starts the Pomodoro timer."""
         print(f"Smart Bulb Status: {json.dumps(self.smart_bulb.status(), indent=2)}")
         print("🍅 Pomodoro timer started")
+        print(f"🍅 {self.pomodoro_config.name} | ⏰ {self.pomodoro_config.duration} min | ☕ {self.pomodoro_config.short_break} min | 🌴 {self.pomodoro_config.long_break} min | 🔄 {self.pomodoro_config.cycles_before_long_break} | 🎨 {self.theme_config.name}")
         print("\n")  # Reserve space for display
 
         cycle_count = 0
@@ -55,9 +57,9 @@ class Pomodoro:
     def _work_session(self, cycle: int, pomodoro_count: int):
         """Execute a work session with the configured duration and color."""
         payload: dict[str, object] = payload_utils.generate_colour_payload(
-            *self.pomodoro_config.color,
-            self.pomodoro_config.saturation,
-            self.pomodoro_config.brightness
+            *self.theme_config.work.color,
+            self.theme_config.work.saturation,
+            self.theme_config.work.brightness
         )
 
         self.smart_bulb.set_multiple_values(payload)
@@ -72,15 +74,15 @@ class Pomodoro:
         """Execute a short break with the configured duration and color."""
 
         payload = payload_utils.generate_colour_payload(
-            *self.pomodoro_config.short_break.color,
-            self.pomodoro_config.short_break.saturation,
-            self.pomodoro_config.short_break.brightness
+            *self.theme_config.short_break.color,
+            self.theme_config.short_break.saturation,
+            self.theme_config.short_break.brightness
         )
 
         self.smart_bulb.set_multiple_values(payload)
 
         self._countdown(
-            self.pomodoro_config.short_break.duration,
+            self.pomodoro_config.short_break,
             f"☕ Short break | 🍅 {pomodoro_count:02d} - 🔄 {cycle:02d}/{self.pomodoro_config.cycles_before_long_break:02d}",
             "✅ Short break completed!"
         )
@@ -89,20 +91,20 @@ class Pomodoro:
         """Execute a long break with the configured duration and color."""
 
         payload = payload_utils.generate_colour_payload(
-            *self.pomodoro_config.long_break.color,
-            self.pomodoro_config.long_break.saturation,
-            self.pomodoro_config.long_break.brightness
+            *self.theme_config.long_break.color,
+            self.theme_config.long_break.saturation,
+            self.theme_config.long_break.brightness
         )
 
         self.smart_bulb.set_multiple_values(payload)
 
         self._countdown(
-            self.pomodoro_config.long_break.duration,
+            self.pomodoro_config.long_break,
             f"🌴 Long break | 🍅 {pomodoro_count:02d} - 🔄 {cycle:02d}/{self.pomodoro_config.cycles_before_long_break:02d}",
             "✅ Long break completed!"
         )
 
-    def _countdown(self, duration_minutes: int, phase_label: str, completion_msg: str):
+    def _countdown(self, duration_minutes: float, phase_label: str, completion_msg: str):
         """
         Countdown timer that displays remaining time in place.
 

@@ -15,23 +15,78 @@
       "version": 3.4
     }
   ],
-  "pomodoro": {
-    "duration": 25,
-    "color": [255, 255, 255],
-    "saturation": 1000,
-    "brightness": 1000,
-    "short_break": {
-      "duration": 5,
-      "color": [0, 0, 0],
-      "saturation": 1000,
-      "brightness": 1000
+  "pomodoros": [
+    {
+      "name": "classic",
+      "duration": 25,
+      "short_break": 5,
+      "long_break": 15,
+      "cycles_before_long_break": 4
     },
-    "long_break": {
+    {
+      "name": "blitz",
       "duration": 15,
-      "color": [0, 0, 0],
-      "saturation": 1000,
-      "brightness": 1000
+      "short_break": 3,
+      "long_break": 10,
+      "cycles_before_long_break": 3
+    }
+  ],
+  "themes": [
+    {
+      "name": "simple-work",
+      "work": {
+        "color": [255, 255, 255],
+        "saturation": 1000,
+        "brightness": 1000
+      },
+      "short_break": {
+        "color": [0, 0, 0],
+        "saturation": 1000,
+        "brightness": 1000
+      },
+      "long_break": {
+        "color": [0, 0, 0],
+        "saturation": 1000,
+        "brightness": 1000
+      }
     },
-    "cycles_before_long_break": 4
-  }
+    {
+      "name": "anime",
+      "work": {
+        "color": [0, 0, 0],
+        "saturation": 1000,
+        "brightness": 1000
+      },
+      "short_break": {
+        "color": [255, 255, 255],
+        "saturation": 1000,
+        "brightness": 1000
+      },
+      "long_break": {
+        "color": [255, 255, 255],
+        "saturation": 1000,
+        "brightness": 1000
+      }
+    },
+    {
+      "name": "cozzy",
+      "work": {
+        "color": [255, 255, 0],
+        "saturation": 600,
+        "brightness": 300
+      },
+      "short_break": {
+        "duration": 5,
+        "color": [0, 0, 0],
+        "saturation": 1000,
+        "brightness": 1000
+      },
+      "long_break": {
+        "duration": 15,
+        "color": [0, 0, 0],
+        "saturation": 1000,
+        "brightness": 1000
+      }
+    }
+  ]
 }

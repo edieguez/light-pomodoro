@@ -16,7 +16,8 @@ if __name__ == "__main__":
 
     config = util.config.Config(CONFIG_FILE_PATH)
     smart_bulb_conf = config.get_smart_bulb(args.bulb)
-    pomodoro_conf = config.get_pomodoro()
+    pomodoro_conf = config.get_pomodoro(args.pomodoro)
+    theme_conf = config.get_theme(args.theme)
 
-    pomodoro = Pomodoro(smart_bulb_conf, pomodoro_conf)
+    pomodoro = Pomodoro(smart_bulb_conf, pomodoro_conf, theme_conf)
     pomodoro.start()
