@@ -2,7 +2,7 @@
 
 import json
 import time
-from notification.notification import DesktopNotifier
+from notification.notification import SmartBulbNotifier, DesktopNotifier
 from tinytuya import BulbDevice
 
 import util.payload as payload_utils
@@ -14,20 +14,15 @@ class Pomodoro:
     """Pomodoro application class"""
 
     def __init__(self, smart_bulb_config: SmartBulbConfig, pomodoro_config: PomodoroConfig, theme_config: ThemeConfig):
-        self.smart_bulb: BulbDevice = BulbDevice(
-            dev_id=smart_bulb_config.device_id,
-            address=smart_bulb_config.address,
-            local_key=smart_bulb_config.local_key,
-            version=smart_bulb_config.version,
-        )
-        self.pomodoro_config: PomodoroConfig = pomodoro_config
-        self.theme_config: ThemeConfig = theme_config
+        self.smart_bulb_notifier = SmartBulbNotifier(smart_bulb_config, theme_config)
         self.desktop_notifier = DesktopNotifier()
+
+        self.pomodoro_config: PomodoroConfig = pomodoro_config
 
     def start(self):
         """Starts the Pomodoro timer."""
         print("🍅 Pomodoro timer started")
-        print(f"🍅 {self.pomodoro_config.name} | ⏰ {self.pomodoro_config.duration} min | ☕ {self.pomodoro_config.short_break} min | 🌴 {self.pomodoro_config.long_break} min | 🔄 {self.pomodoro_config.cycles_before_long_break} | 🎨 {self.theme_config.name}")
+        print(f"🍅 {self.pomodoro_config.name} | ⏰ {self.pomodoro_config.duration} min | ☕ {self.pomodoro_config.short_break} min | 🌴 {self.pomodoro_config.long_break} min | 🔄 {self.pomodoro_config.cycles_before_long_break}")
         print("\n")  # Reserve space for display
 
         cycle_count = 0
@@ -49,23 +44,16 @@ class Pomodoro:
                 else:
                     # Short break
                     self._short_break(cycle_count, pomodoro_count)
-
         except KeyboardInterrupt:
             # Move cursor to below the display area
             print("\n")
             print("🛑 Pomodoro timer stopped by user")
-            self.smart_bulb.turn_off()
+            self.smart_bulb_notifier.turn_off()
 
     def _work_session(self, cycle: int, pomodoro_count: int):
         """Execute a work session with the configured duration and color."""
-        payload: dict[str, object] = payload_utils.generate_colour_payload(
-            *self.theme_config.work.color,
-            self.theme_config.work.saturation,
-            self.theme_config.work.brightness
-        )
-
         self.desktop_notifier.work_notification()
-        self.smart_bulb.set_multiple_values(payload)
+        self.smart_bulb_notifier.work_notification()
 
         self._countdown(
             self.pomodoro_config.duration,
@@ -75,15 +63,8 @@ class Pomodoro:
 
     def _short_break(self, cycle: int, pomodoro_count: int):
         """Execute a short break with the configured duration and color."""
-
-        payload = payload_utils.generate_colour_payload(
-            *self.theme_config.short_break.color,
-            self.theme_config.short_break.saturation,
-            self.theme_config.short_break.brightness
-        )
-
         self.desktop_notifier.short_break_notification()
-        self.smart_bulb.set_multiple_values(payload)
+        self.smart_bulb_notifier.short_break_notification()
 
         self._countdown(
             self.pomodoro_config.short_break,
@@ -93,15 +74,8 @@ class Pomodoro:
 
     def _long_break(self, cycle: int, pomodoro_count: int):
         """Execute a long break with the configured duration and color."""
-
-        payload = payload_utils.generate_colour_payload(
-            *self.theme_config.long_break.color,
-            self.theme_config.long_break.saturation,
-            self.theme_config.long_break.brightness
-        )
-
         self.desktop_notifier.long_break_notification()
-        self.smart_bulb.set_multiple_values(payload)
+        self.smart_bulb_notifier.long_break_notification()
 
         self._countdown(
             self.pomodoro_config.long_break,

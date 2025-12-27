@@ -2,7 +2,64 @@
 
 import os
 
+from pomodoro.models import SmartBulbConfig, ThemeConfig
+import util.payload as payload_utils
+
+from tinytuya import BulbDevice
 from notifypy import Notify
+
+class SmartBulbNotifier:
+    """Class for sending notifications via smart bulb"""
+
+    def __init__(self, smart_bulb_config: SmartBulbConfig, theme_config: ThemeConfig) -> None:
+        self.smart_bulb: BulbDevice = BulbDevice(
+            dev_id=smart_bulb_config.device_id,
+            address=smart_bulb_config.address,
+            local_key= smart_bulb_config.local_key,
+            version=smart_bulb_config.version,
+        )
+        self.theme_config = theme_config
+
+    def work_notification(self) -> None:
+        """Set bulb color for work session"""
+        payload: dict[str, object] = payload_utils.generate_colour_payload(
+            self.theme_config.work.color[0], # Red
+            self.theme_config.work.color[1], # Green
+            self.theme_config.work.color[2], # Blue
+            self.theme_config.work.saturation,
+            self.theme_config.work.brightness
+        )
+
+        self.smart_bulb.set_multiple_values(payload)
+
+
+    def short_break_notification(self) -> None:
+        """Set bulb color for short break"""
+        payload: dict[str, object] = payload_utils.generate_colour_payload(
+            self.theme_config.short_break.color[0], # Red
+            self.theme_config.short_break.color[1], # Green
+            self.theme_config.short_break.color[2], # Blue
+            self.theme_config.short_break.saturation,
+            self.theme_config.short_break.brightness
+        )
+
+        self.smart_bulb.set_multiple_values(payload)
+
+    def long_break_notification(self) -> None:
+        """Set bulb color for long break"""
+        payload: dict[str, object] = payload_utils.generate_colour_payload(
+            self.theme_config.long_break.color[0], # Red
+            self.theme_config.long_break.color[1], # Green
+            self.theme_config.long_break.color[2], # Blue
+            self.theme_config.long_break.saturation,
+            self.theme_config.long_break.brightness
+        )
+
+        self.smart_bulb.set_multiple_values(payload)
+
+    def turn_off(self) -> None:
+        """Turn off the smart bulb"""
+        self.smart_bulb.turn_off()
 
 class DesktopNotifier:
     """Class for sending desktop notifications"""
