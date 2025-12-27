@@ -210,3 +210,4 @@ config/pomodoro.yaml
 wizard
 .DS_Store
 *.bck
+.idea

@@ -1,10 +1,11 @@
 """Pomodoro utility functions"""
 
-import yaml
 from argparse import ArgumentParser, Namespace
 
-from pomodoro.models import SmartBulbConfig, PomodoroConfig, ThemeConfig
+import yaml
+
 from notification.notification import NoOpBulbNotifier, SmartBulbNotifier, DesktopNotifier, NoOpDesktopNotifier
+from pomodoro.models import SmartBulbConfig, PomodoroConfig, ThemeConfig
 
 
 def parse_args() -> Namespace:
@@ -58,6 +59,7 @@ def parse_args() -> Namespace:
     )
 
     return parser.parse_args()
+
 
 class Config:
     """Read and parse Pomodoro configuration from a JSON file"""

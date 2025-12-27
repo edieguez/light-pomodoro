@@ -9,7 +9,8 @@ from pomodoro.models import PomodoroConfig
 class Pomodoro:
     """Pomodoro application class"""
 
-    def __init__(self, smart_bulb_notifier: SmartBulbNotifier | NoOpBulbNotifier, desktop_notifier: DesktopNotifier | NoOpDesktopNotifier, pomodoro_config: PomodoroConfig):
+    def __init__(self, smart_bulb_notifier: SmartBulbNotifier | NoOpBulbNotifier,
+                 desktop_notifier: DesktopNotifier | NoOpDesktopNotifier, pomodoro_config: PomodoroConfig):
         self.smart_bulb_notifier = smart_bulb_notifier
         self.desktop_notifier = desktop_notifier
         self.pomodoro_config: PomodoroConfig = pomodoro_config
@@ -17,7 +18,8 @@ class Pomodoro:
     def start(self):
         """Starts the Pomodoro timer."""
         print("🍅 Pomodoro timer started")
-        print(f"🍅 {self.pomodoro_config.name} | ⏰ {self.pomodoro_config.duration} min | ☕ {self.pomodoro_config.short_break} min | 🌴 {self.pomodoro_config.long_break} min | 🔄 {self.pomodoro_config.cycles_before_long_break}")
+        print(
+            f"🍅 {self.pomodoro_config.name} | ⏰ {self.pomodoro_config.duration} min | ☕ {self.pomodoro_config.short_break} min | 🌴 {self.pomodoro_config.long_break} min | 🔄 {self.pomodoro_config.cycles_before_long_break}")
         print("\n")  # Reserve space for display
 
         cycle_count = 0
@@ -78,7 +80,7 @@ class Pomodoro:
             "✅ Long break completed!"
         )
 
-    def _countdown(self, duration_minutes: float, phase_label: str, completion_msg: str):
+    def _countdown(self, duration_minutes: int, phase_label: str, completion_msg: str):
         """
         Countdown timer that displays remaining time in place.
 

@@ -4,12 +4,11 @@
 
 import os
 
-from pomodoro.pomodoro import Pomodoro
 import util.config
-
+from pomodoro.pomodoro import Pomodoro
 
 if __name__ == "__main__":
-    BASE_DIR=os.path.dirname(os.path.abspath(__file__))
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     CONFIG_FILE_PATH = os.path.join(BASE_DIR, "config/pomodoro.yaml")
 
     config = util.config.Config(CONFIG_FILE_PATH)

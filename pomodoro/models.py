@@ -1,7 +1,8 @@
 """Models for the Pomodoro application"""
 
-from pydantic import BaseModel, Field, field_validator
 from typing import List
+
+from pydantic import BaseModel, Field, field_validator
 
 
 class SmartBulbConfig(BaseModel):
@@ -40,6 +41,7 @@ class ThemeColor(BaseModel):
                 raise ValueError("RGB values must be between 0 and 255")
 
         return value
+
 
 class ThemeConfig(BaseModel):
     """Model representing a theme configuration for smart bulb colors."""

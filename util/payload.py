@@ -1,7 +1,8 @@
 """Functions to generate DPS raw payloads"""
 
+
 def generate_colour_payload(r: int, g: int, b: int, saturation: int,
-                             brightness: int) -> dict[str, object]:
+                            brightness: int) -> dict[str, object]:
     """Generate payload for setting smart bulb color based on RGB values."""
 
     if r == g == b == 255:
@@ -30,6 +31,7 @@ def generate_colour_payload(r: int, g: int, b: int, saturation: int,
             "24": hsv
         }
 
+
 def rgb_to_hue(r: int, g: int, b: int) -> int:
     """Convert RGB values to Hue component in HSV color space."""
 
@@ -49,6 +51,7 @@ def rgb_to_hue(r: int, g: int, b: int) -> int:
         h = 60 * (((r1 - g1) / delta) + 4)
 
     return int(round(h))
+
 
 def encode_colour(h: int, s: int, v: int) -> str:
     """Encode HSV values into a hexadecimal string payload."""
