@@ -2,9 +2,11 @@
 
 import json
 import time
+from notification.notification import DesktopNotifier
 from tinytuya import BulbDevice
 
 import util.payload as payload_utils
+
 from pomodoro.models import PomodoroConfig, SmartBulbConfig, ThemeConfig
 
 
@@ -20,10 +22,10 @@ class Pomodoro:
         )
         self.pomodoro_config: PomodoroConfig = pomodoro_config
         self.theme_config: ThemeConfig = theme_config
+        self.desktop_notifier = DesktopNotifier()
 
     def start(self):
         """Starts the Pomodoro timer."""
-        print(f"Smart Bulb Status: {json.dumps(self.smart_bulb.status(), indent=2)}")
         print("🍅 Pomodoro timer started")
         print(f"🍅 {self.pomodoro_config.name} | ⏰ {self.pomodoro_config.duration} min | ☕ {self.pomodoro_config.short_break} min | 🌴 {self.pomodoro_config.long_break} min | 🔄 {self.pomodoro_config.cycles_before_long_break} | 🎨 {self.theme_config.name}")
         print("\n")  # Reserve space for display
@@ -62,6 +64,7 @@ class Pomodoro:
             self.theme_config.work.brightness
         )
 
+        self.desktop_notifier.work_notification()
         self.smart_bulb.set_multiple_values(payload)
 
         self._countdown(
@@ -79,6 +82,7 @@ class Pomodoro:
             self.theme_config.short_break.brightness
         )
 
+        self.desktop_notifier.short_break_notification()
         self.smart_bulb.set_multiple_values(payload)
 
         self._countdown(
@@ -96,6 +100,7 @@ class Pomodoro:
             self.theme_config.long_break.brightness
         )
 
+        self.desktop_notifier.long_break_notification()
         self.smart_bulb.set_multiple_values(payload)
 
         self._countdown(
