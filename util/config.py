@@ -3,6 +3,7 @@
 from argparse import ArgumentParser, Namespace
 
 import yaml
+from tinytuya import BulbDevice
 
 from notification.notification import NoOpBulbNotifier, SmartBulbNotifier, DesktopNotifier, NoOpDesktopNotifier
 from pomodoro.models import SmartBulbConfig, PomodoroConfig, ThemeConfig
@@ -29,7 +30,6 @@ def parse_args() -> Namespace:
         action="store_true",
         help="Do not use a smart bulb for Pomodoro notifications.",
     )
-
     parser.add_argument(
         "-p",
         "--pomodoro",
@@ -57,8 +57,23 @@ def parse_args() -> Namespace:
         action="store_true",
         help="Do not use desktop notifications for Pomodoro events.",
     )
+    parser.add_argument(
+        "-s",
+        "--status",
+        metavar="BULB",
+        type=str,
+        default=None,
+        help="Show status for the given smart bulb and exit. When present, no other arguments are allowed.",
+    )
 
-    return parser.parse_args()
+    args = parser.parse_args()
+
+    # --status cannot be combined with pomodoro/theme/desktop options
+    if args.status is not None:
+        if args.pomodoro is not None or args.theme is not None or args.no_desktop_notification:
+            parser.error("`--status` may not be combined with any other arguments.")
+
+    return args
 
 
 class Config:
@@ -90,6 +105,27 @@ class Config:
                 return SmartBulbNotifier(SmartBulbConfig(**smart_bulb), theme)
 
         raise ValueError(f"Smart bulb with name '{self.args.bulb}' not found.")
+
+    def get_simple_smart_bulb(self) -> BulbDevice:
+        """Retrieve a simple BulbDevice for status checking."""
+        available_bulbs = self.raw_config.get("smart_bulbs", [])
+
+        if not available_bulbs:
+            raise ValueError("No smart bulbs found in configuration file.")
+
+        bulb_name = self.args.status
+
+        for smart_bulb in available_bulbs:
+            if smart_bulb.get("name").lower() == bulb_name:
+                bulb_config = SmartBulbConfig(**smart_bulb)
+                return BulbDevice(
+                    dev_id=bulb_config.device_id,
+                    address=bulb_config.address,
+                    local_key=bulb_config.local_key,
+                    version=bulb_config.version,
+                )
+
+        raise ValueError(f"Smart bulb with name '{bulb_name}' not found.")
 
     def get_desktop_notifier(self) -> DesktopNotifier | NoOpDesktopNotifier:
         """Retrieve the desktop notifier based on command line arguments."""

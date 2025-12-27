@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 """Main entry point for the Pomodoro application."""
-
+import json
 import os
 
 import util.config
@@ -12,9 +12,15 @@ if __name__ == "__main__":
     CONFIG_FILE_PATH = os.path.join(BASE_DIR, "config/pomodoro.yaml")
 
     config = util.config.Config(CONFIG_FILE_PATH)
-    smart_bulb = config.get_smart_bulb()
-    desktop_notifier = config.get_desktop_notifier()
-    pomodoro_conf = config.get_pomodoro(config.args.pomodoro)
 
-    pomodoro = Pomodoro(smart_bulb, desktop_notifier, pomodoro_conf)
-    pomodoro.start()
+    if config.args.status:
+        bulb = config.get_simple_smart_bulb()
+        status = bulb.status()
+        print(f"{config.args.status.title()} status: {json.dumps(status, indent=2)}")
+    else:
+        smart_bulb = config.get_smart_bulb()
+        desktop_notifier = config.get_desktop_notifier()
+        pomodoro_conf = config.get_pomodoro(config.args.pomodoro)
+
+        pomodoro = Pomodoro(smart_bulb, desktop_notifier, pomodoro_conf)
+        pomodoro.start()
