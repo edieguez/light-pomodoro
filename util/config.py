@@ -4,13 +4,15 @@ import yaml
 from argparse import ArgumentParser, Namespace
 
 from pomodoro.models import SmartBulbConfig, PomodoroConfig, ThemeConfig
+from notification.notification import NoOpBulbNotifier, SmartBulbNotifier
 
 
 def parse_args() -> Namespace:
     """Parse command line arguments."""
     parser = ArgumentParser(description="Pomodoro Timer with Smart Bulb Integration")
 
-    parser.add_argument(
+    bulb_group = parser.add_mutually_exclusive_group()
+    bulb_group.add_argument(
         "-b",
         "--bulb",
         type=str,
@@ -20,6 +22,13 @@ def parse_args() -> Namespace:
             "Defaults to the first smart bulb found in the configuration file."
         ),
     )
+    bulb_group.add_argument(
+        "-B",
+        "--no-bulb",
+        action="store_true",
+        help="Do not use a smart bulb for Pomodoro notifications.",
+    )
+
     parser.add_argument(
         "-p",
         "--pomodoro",
@@ -51,21 +60,28 @@ class Config:
         with open(file_path, "r", encoding="utf-8") as file:
             self.raw_config = yaml.safe_load(file)
 
-    def get_smart_bulb(self, bulb_name: str | None) -> SmartBulbConfig:
-        """Retrieve a SmartBulbConfig by name from the configuration file."""
+        self.args = parse_args()
+
+    def get_smart_bulb(self) -> SmartBulbNotifier | NoOpBulbNotifier:
+        """TODO: Generate docstring"""
+        if self.args.no_bulb:
+            return NoOpBulbNotifier()
+
         available_bulbs = self.raw_config.get("smart_bulbs", [])
 
         if not available_bulbs:
             raise ValueError("No smart bulbs found in configuration file.")
 
-        if bulb_name is None:
-            return SmartBulbConfig(**available_bulbs[0])
+        theme: ThemeConfig = self.get_theme(self.args.theme)
+
+        if self.args.bulb is None:
+            return SmartBulbNotifier(SmartBulbConfig(**available_bulbs[0]), theme)
 
         for smart_bulb in available_bulbs:
-            if smart_bulb.get("name").lower() == bulb_name.lower():
-                return SmartBulbConfig(**smart_bulb)
+            if smart_bulb.get("name").lower() == self.args.bulb.lower():
+                return SmartBulbNotifier(SmartBulbConfig(**smart_bulb), theme)
 
-        raise ValueError(f"Smart bulb with name '{bulb_name}' not found.")
+        raise ValueError(f"Smart bulb with name '{self.args.bulb}' not found.")
 
     def get_pomodoro(self, pomodoro_name: str | None) -> PomodoroConfig:
         """Retrieve the PomodoroConfig from the configuration file."""

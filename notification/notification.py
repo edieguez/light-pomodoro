@@ -8,6 +8,7 @@ import util.payload as payload_utils
 from tinytuya import BulbDevice
 from notifypy import Notify
 
+
 class SmartBulbNotifier:
     """Class for sending notifications via smart bulb"""
 
@@ -60,6 +61,27 @@ class SmartBulbNotifier:
     def turn_off(self) -> None:
         """Turn off the smart bulb"""
         self.smart_bulb.turn_off()
+
+
+class NoOpBulbNotifier:
+    """A SmartBulbNotifier that does nothing (for no-bulb scenarios)"""
+
+    def work_notification(self) -> None:
+        """Do nothing for work notification"""
+        pass
+
+    def short_break_notification(self) -> None:
+        """Do nothing for short break notification"""
+        pass
+
+    def long_break_notification(self) -> None:
+        """Do nothing for long break notification"""
+        pass
+
+    def turn_off(self) -> None:
+        """Do nothing for turning off the bulb"""
+        pass
+
 
 class DesktopNotifier:
     """Class for sending desktop notifications"""

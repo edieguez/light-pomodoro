@@ -1,22 +1,19 @@
 """Main Pomodoro application logic"""
 
-import json
 import time
-from notification.notification import SmartBulbNotifier, DesktopNotifier
+
 from tinytuya import BulbDevice
 
-import util.payload as payload_utils
-
-from pomodoro.models import PomodoroConfig, SmartBulbConfig, ThemeConfig
+from notification.notification import NoOpBulbNotifier, SmartBulbNotifier, DesktopNotifier
+from pomodoro.models import PomodoroConfig
 
 
 class Pomodoro:
     """Pomodoro application class"""
 
-    def __init__(self, smart_bulb_config: SmartBulbConfig, pomodoro_config: PomodoroConfig, theme_config: ThemeConfig):
-        self.smart_bulb_notifier = SmartBulbNotifier(smart_bulb_config, theme_config)
+    def __init__(self, smart_bulb_notifier: SmartBulbNotifier | NoOpBulbNotifier, pomodoro_config: PomodoroConfig):
+        self.smart_bulb_notifier = smart_bulb_notifier
         self.desktop_notifier = DesktopNotifier()
-
         self.pomodoro_config: PomodoroConfig = pomodoro_config
 
     def start(self):
