@@ -4,7 +4,7 @@ import yaml
 from argparse import ArgumentParser, Namespace
 
 from pomodoro.models import SmartBulbConfig, PomodoroConfig, ThemeConfig
-from notification.notification import NoOpBulbNotifier, SmartBulbNotifier
+from notification.notification import NoOpBulbNotifier, SmartBulbNotifier, DesktopNotifier, NoOpDesktopNotifier
 
 
 def parse_args() -> Namespace:
@@ -50,6 +50,12 @@ def parse_args() -> Namespace:
             "Defaults to the first theme found in the configuration file."
         ),
     )
+    parser.add_argument(
+        "-N",
+        "--no-desktop-notification",
+        action="store_true",
+        help="Do not use desktop notifications for Pomodoro events.",
+    )
 
     return parser.parse_args()
 
@@ -63,7 +69,7 @@ class Config:
         self.args = parse_args()
 
     def get_smart_bulb(self) -> SmartBulbNotifier | NoOpBulbNotifier:
-        """TODO: Generate docstring"""
+        """Retrieve the SmartBulbNotifier based on command line arguments."""
         if self.args.no_bulb:
             return NoOpBulbNotifier()
 
@@ -82,6 +88,13 @@ class Config:
                 return SmartBulbNotifier(SmartBulbConfig(**smart_bulb), theme)
 
         raise ValueError(f"Smart bulb with name '{self.args.bulb}' not found.")
+
+    def get_desktop_notifier(self) -> DesktopNotifier | NoOpDesktopNotifier:
+        """Retrieve the desktop notifier based on command line arguments."""
+        if self.args.no_desktop_notification:
+            return NoOpDesktopNotifier()
+
+        return DesktopNotifier()
 
     def get_pomodoro(self, pomodoro_name: str | None) -> PomodoroConfig:
         """Retrieve the PomodoroConfig from the configuration file."""

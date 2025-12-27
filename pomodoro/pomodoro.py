@@ -2,18 +2,16 @@
 
 import time
 
-from tinytuya import BulbDevice
-
-from notification.notification import NoOpBulbNotifier, SmartBulbNotifier, DesktopNotifier
+from notification.notification import NoOpBulbNotifier, SmartBulbNotifier, DesktopNotifier, NoOpDesktopNotifier
 from pomodoro.models import PomodoroConfig
 
 
 class Pomodoro:
     """Pomodoro application class"""
 
-    def __init__(self, smart_bulb_notifier: SmartBulbNotifier | NoOpBulbNotifier, pomodoro_config: PomodoroConfig):
+    def __init__(self, smart_bulb_notifier: SmartBulbNotifier | NoOpBulbNotifier, desktop_notifier: DesktopNotifier | NoOpDesktopNotifier, pomodoro_config: PomodoroConfig):
         self.smart_bulb_notifier = smart_bulb_notifier
-        self.desktop_notifier = DesktopNotifier()
+        self.desktop_notifier = desktop_notifier
         self.pomodoro_config: PomodoroConfig = pomodoro_config
 
     def start(self):

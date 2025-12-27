@@ -114,3 +114,19 @@ class DesktopNotifier:
         self.notification.message = f"🌴 Long break started!"
 
         self.notification.send()
+
+
+class NoOpDesktopNotifier:
+    """A DesktopNotifier that does nothing (for no-desktop-notification scenarios)"""
+
+    def work_notification(self) -> None:
+        """Do nothing for work notification"""
+        pass
+
+    def short_break_notification(self) -> None:
+        """Do nothing for short break notification"""
+        pass
+
+    def long_break_notification(self) -> None:
+        """Do nothing for long break notification"""
+        pass

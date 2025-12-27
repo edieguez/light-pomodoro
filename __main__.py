@@ -14,7 +14,8 @@ if __name__ == "__main__":
 
     config = util.config.Config(CONFIG_FILE_PATH)
     smart_bulb = config.get_smart_bulb()
+    desktop_notifier = config.get_desktop_notifier()
     pomodoro_conf = config.get_pomodoro(config.args.pomodoro)
 
-    pomodoro = Pomodoro(smart_bulb, pomodoro_conf)
+    pomodoro = Pomodoro(smart_bulb, desktop_notifier, pomodoro_conf)
     pomodoro.start()
