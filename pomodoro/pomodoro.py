@@ -19,8 +19,7 @@ class Pomodoro:
         """Starts the Pomodoro timer."""
         print("🍅 Pomodoro timer started")
         print(
-            f"🍅 {self.pomodoro_config.name} | ⏰ {self.pomodoro_config.duration} min | ☕ {self.pomodoro_config.short_break} min | 🌴 {self.pomodoro_config.long_break} min | 🔄 {self.pomodoro_config.cycles_before_long_break}")
-        print("\n")  # Reserve space for display
+            f"🍅 {self.pomodoro_config.name} | ⏰ {self.pomodoro_config.duration} min | ☕️ {self.pomodoro_config.short_break} min | 🌴 {self.pomodoro_config.long_break} min | 🔄 {self.pomodoro_config.cycles_before_long_break}")
 
         cycle_count = 0
         pomodoro_count = 0
@@ -29,22 +28,16 @@ class Pomodoro:
             while True:
                 cycle_count += 1
 
-                # Work session
                 self._work_session(cycle_count, pomodoro_count)
 
-                # Determine break type
                 if cycle_count % self.pomodoro_config.cycles_before_long_break == 0:
-                    # Long break after completing the configured number of cycles
                     self._long_break(cycle_count, pomodoro_count)
                     pomodoro_count += 1
-                    cycle_count = 0  # Reset cycle count after long break
+                    cycle_count = 0
                 else:
-                    # Short break
                     self._short_break(cycle_count, pomodoro_count)
         except KeyboardInterrupt:
-            # Move cursor to below the display area
-            print("\n")
-            print("🛑 Pomodoro timer stopped by user")
+            print("\n🛑 Pomodoro timer stopped by user")
             self.smart_bulb_notifier.turn_off()
 
     def _work_session(self, cycle: int, pomodoro_count: int):
@@ -65,7 +58,7 @@ class Pomodoro:
 
         self._countdown(
             self.pomodoro_config.short_break,
-            f"☕ Short break | 🍅 {pomodoro_count:02d} - 🔄 {cycle:02d}/{self.pomodoro_config.cycles_before_long_break:02d}",
+            f"☕️ Short break | 🍅 {pomodoro_count:02d} - 🔄 {cycle:02d}/{self.pomodoro_config.cycles_before_long_break:02d}",
             "✅ Short break completed!"
         )
 
@@ -81,30 +74,20 @@ class Pomodoro:
         )
 
     def _countdown(self, duration_minutes: int, phase_label: str, completion_msg: str):
-        """
-        Countdown timer that displays remaining time in place.
-
-        Args:
-            duration_minutes: Duration in minutes
-            phase_label: Label for the current phase
-            completion_msg: Message to display when completed
-        """
+        """Countdown timer that displays remaining time in place."""
         total_seconds = duration_minutes * 60
-
-        # Move cursor up 1 line to the display area
-        print("\033[1A", end="")
 
         for remaining in range(total_seconds, 0, -1):
             minutes, seconds = divmod(remaining, 60)
             time_str = f"{minutes:02d}:{seconds:02d}"
 
             # Clear and update display (single line)
-            print("\033[K" + f"{phase_label} | ⏱️ {time_str}", end="", flush=True)
+            print(f"\033[K{phase_label} | ⏱️ {time_str}", end="", flush=True)
             print("\r", end="")  # Return to start of line
 
             time.sleep(1)
 
         # Display completion message
-        print("\033[K" + completion_msg, flush=True)
+        print(f"\033[K{completion_msg}\r", flush=True, end="")
 
-        time.sleep(2)  # Show completion message briefly
+        time.sleep(1.5)  # Show completion message briefly

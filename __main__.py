@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
-
 """Main entry point for the Pomodoro application."""
+
 import json
 import os
 
@@ -18,9 +18,9 @@ if __name__ == "__main__":
         status = bulb.status()
         print(f"{config.args.status.title()} status: {json.dumps(status, indent=2)}")
     else:
-        smart_bulb = config.get_smart_bulb()
+        bulb_notifier = config.get_smart_bulb()
         desktop_notifier = config.get_desktop_notifier()
         pomodoro_conf = config.get_pomodoro(config.args.pomodoro)
 
-        pomodoro = Pomodoro(smart_bulb, desktop_notifier, pomodoro_conf)
+        pomodoro = Pomodoro(bulb_notifier, desktop_notifier, pomodoro_conf)
         pomodoro.start()
