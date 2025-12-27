@@ -1,11 +1,14 @@
 """Functions to generate DPS raw payloads"""
+import json
 
 
-def generate_colour_payload(r: int, g: int, b: int, saturation: int,
-                            brightness: int) -> dict[str, object]:
+def generate_payload(r: int, g: int, b: int, saturation: int,
+                     brightness: int, dps: str) -> dict[str, object]:
     """Generate payload for setting smart bulb color based on RGB values."""
 
-    if r == g == b == 255:
+    if dps:
+        return json.loads(dps)
+    elif r == g == b == 255:
         # White mode
         return {
             "20": True,

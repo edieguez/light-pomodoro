@@ -1,6 +1,6 @@
 """Models for the Pomodoro application"""
 
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -28,6 +28,7 @@ class ThemeColor(BaseModel):
     color: List[int] = Field(..., description="RGB color [0-255, 0-255, 0-255]")
     saturation: int = Field(..., ge=10, le=1000)
     brightness: int = Field(..., ge=10, le=1000)
+    dps: Optional[str] = Field("", description="Optional DPS string for custom payload")
 
     @field_validator("color")
     def validate_rgb(cls, value):

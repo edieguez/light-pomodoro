@@ -1,12 +1,12 @@
 """Module for sending notifications for Pomodoro timer events"""
-
+import json
 import os
 
 from notifypy import Notify
 from tinytuya import BulbDevice
 
 import util.payload as payload_utils
-from pomodoro.models import SmartBulbConfig, ThemeConfig
+from pomodoro.models import SmartBulbConfig, ThemeConfig, ThemeColor
 
 
 class SmartBulbNotifier:
@@ -23,43 +23,31 @@ class SmartBulbNotifier:
 
     def work_notification(self) -> None:
         """Set bulb color for work session"""
-        payload: dict[str, object] = payload_utils.generate_colour_payload(
-            self.theme_config.work.color[0],  # Red
-            self.theme_config.work.color[1],  # Green
-            self.theme_config.work.color[2],  # Blue
-            self.theme_config.work.saturation,
-            self.theme_config.work.brightness
-        )
-
-        self.smart_bulb.set_multiple_values(payload)
+        self._set_dps_payload(self.theme_config.work)
 
     def short_break_notification(self) -> None:
         """Set bulb color for short break"""
-        payload: dict[str, object] = payload_utils.generate_colour_payload(
-            self.theme_config.short_break.color[0],  # Red
-            self.theme_config.short_break.color[1],  # Green
-            self.theme_config.short_break.color[2],  # Blue
-            self.theme_config.short_break.saturation,
-            self.theme_config.short_break.brightness
-        )
-
-        self.smart_bulb.set_multiple_values(payload)
+        self._set_dps_payload(self.theme_config.short_break)
 
     def long_break_notification(self) -> None:
         """Set bulb color for long break"""
-        payload: dict[str, object] = payload_utils.generate_colour_payload(
-            self.theme_config.long_break.color[0],  # Red
-            self.theme_config.long_break.color[1],  # Green
-            self.theme_config.long_break.color[2],  # Blue
-            self.theme_config.long_break.saturation,
-            self.theme_config.long_break.brightness
-        )
-
-        self.smart_bulb.set_multiple_values(payload)
+        self._set_dps_payload(self.theme_config.long_break)
 
     def turn_off(self) -> None:
         """Turn off the smart bulb"""
         self.smart_bulb.turn_off()
+
+    def _set_dps_payload(self, phase_color: ThemeColor) -> None:
+        payload: dict[str, object] = payload_utils.generate_payload(
+            phase_color.color[0],  # Red
+            phase_color.color[1],  # Green
+            phase_color.color[2],  # Blue
+            phase_color.saturation,
+            phase_color.brightness,
+            phase_color.dps
+        )
+
+        self.smart_bulb.set_multiple_values(payload)
 
 
 class NoOpBulbNotifier:
