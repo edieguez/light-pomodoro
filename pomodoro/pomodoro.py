@@ -2,7 +2,8 @@
 
 import time
 
-from notification.notification import NoOpBulbNotifier, SmartBulbNotifier, DesktopNotifier, NoOpDesktopNotifier
+from notification.notification import (NoOpBulbNotifier, SmartBulbNotifier,
+                                       DesktopNotifier, NoOpDesktopNotifier)
 from pomodoro.models import PomodoroConfig
 
 
@@ -10,16 +11,20 @@ class Pomodoro:
     """Pomodoro application class"""
 
     def __init__(self, smart_bulb_notifier: SmartBulbNotifier | NoOpBulbNotifier,
-                 desktop_notifier: DesktopNotifier | NoOpDesktopNotifier, pomodoro_config: PomodoroConfig):
+                 desktop_notifier: DesktopNotifier | NoOpDesktopNotifier,
+                 pomodoro_config: PomodoroConfig):
         self.smart_bulb_notifier = smart_bulb_notifier
         self.desktop_notifier = desktop_notifier
-        self.pomodoro_config: PomodoroConfig = pomodoro_config
+        self.config: PomodoroConfig = pomodoro_config
 
     def start(self):
         """Starts the Pomodoro timer."""
         print("🍅 Pomodoro timer started")
         print(
-            f"🍅 {self.pomodoro_config.name} | ⏰ {self.pomodoro_config.duration} min | ☕️ {self.pomodoro_config.short_break} min | 🌴 {self.pomodoro_config.long_break} min | 🔄 {self.pomodoro_config.cycles_before_long_break}")
+            f"🍅 {self.config.name.title()} | ⏰ {self.config.duration} min | "
+            f"☕️ {self.config.short_break} min | 🌴 {self.config.long_break} min | "
+            f"🔄 {self.config.cycles_before_long_break}"
+        )
 
         cycle_count = 0
         pomodoro_count = 0
@@ -28,48 +33,51 @@ class Pomodoro:
             while True:
                 cycle_count += 1
 
-                self._work_session(cycle_count, pomodoro_count)
+                self.work_session(cycle_count, pomodoro_count)
 
-                if cycle_count % self.pomodoro_config.cycles_before_long_break == 0:
-                    self._long_break(cycle_count, pomodoro_count)
+                if cycle_count % self.config.cycles_before_long_break == 0:
+                    self.long_break(cycle_count, pomodoro_count)
                     pomodoro_count += 1
                     cycle_count = 0
                 else:
-                    self._short_break(cycle_count, pomodoro_count)
+                    self.short_break(cycle_count, pomodoro_count)
         except KeyboardInterrupt:
             print("\n🛑 Pomodoro timer stopped by user")
             self.smart_bulb_notifier.turn_off()
 
-    def _work_session(self, cycle: int, pomodoro_count: int):
+    def work_session(self, cycle: int, pomodoro_count: int):
         """Execute a work session with the configured duration and color."""
         self.desktop_notifier.work_notification()
         self.smart_bulb_notifier.work_notification()
 
         self._countdown(
-            self.pomodoro_config.duration,
-            f"⏰ Work session | 🍅 {pomodoro_count:02d} - 🔄 {cycle:02d}/{self.pomodoro_config.cycles_before_long_break:02d}",
+            self.config.duration,
+            f"⏰ Work session | 🍅 {pomodoro_count:02d} - "
+            f"🔄 {cycle:02d}/{self.config.cycles_before_long_break:02d}",
             "✅ Work session completed!"
         )
 
-    def _short_break(self, cycle: int, pomodoro_count: int):
+    def short_break(self, cycle: int, pomodoro_count: int):
         """Execute a short break with the configured duration and color."""
         self.desktop_notifier.short_break_notification()
         self.smart_bulb_notifier.short_break_notification()
 
         self._countdown(
-            self.pomodoro_config.short_break,
-            f"☕️ Short break | 🍅 {pomodoro_count:02d} - 🔄 {cycle:02d}/{self.pomodoro_config.cycles_before_long_break:02d}",
+            self.config.short_break,
+            f"☕️ Short break | 🍅 {pomodoro_count:02d} - "
+            f"🔄 {cycle:02d}/{self.config.cycles_before_long_break:02d}",
             "✅ Short break completed!"
         )
 
-    def _long_break(self, cycle: int, pomodoro_count: int):
+    def long_break(self, cycle: int, pomodoro_count: int):
         """Execute a long break with the configured duration and color."""
         self.desktop_notifier.long_break_notification()
         self.smart_bulb_notifier.long_break_notification()
 
         self._countdown(
-            self.pomodoro_config.long_break,
-            f"🌴 Long break | 🍅 {pomodoro_count:02d} - 🔄 {cycle:02d}/{self.pomodoro_config.cycles_before_long_break:02d}",
+            self.config.long_break,
+            f"🌴 Long break | 🍅 {pomodoro_count:02d} - "
+            f"🔄 {cycle:02d}/{self.config.cycles_before_long_break:02d}",
             "✅ Long break completed!"
         )
 

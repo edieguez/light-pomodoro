@@ -2,37 +2,37 @@
 import json
 
 
-def generate_payload(r: int, g: int, b: int, saturation: int,
+def generate_payload(rgb: list[int], saturation: int,
                      brightness: int, dps: str) -> dict[str, object]:
     """Generate payload for setting smart bulb color based on RGB values."""
+    r, g, b = rgb
 
     if dps:
         return json.loads(dps)
-    elif r == g == b == 255:
+
+    if r == g == b == 255:
         # White mode
         return {
             "20": True,
             "21": "white",
             "22": brightness
         }
-    elif r == g == b == 0:
+
+    if r == g == b == 0:
         # There is not a pure black mode, so we turn off the bulb
         return {
             "20": False
         }
-    else:
-        # Colour mode
-        hsv = encode_colour(
+
+    return {
+        "20": True,
+        "21": "colour",
+        "24": encode_colour(
             rgb_to_hue(r, g, b),
             saturation,
             brightness
         )
-
-        return {
-            "20": True,
-            "21": "colour",
-            "24": hsv
-        }
+    }
 
 
 def rgb_to_hue(r: int, g: int, b: int) -> int:

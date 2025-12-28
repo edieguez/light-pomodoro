@@ -28,16 +28,16 @@ class ThemeColor(BaseModel):
     color: List[int] = Field(..., description="RGB color [0-255, 0-255, 0-255]")
     saturation: int = Field(..., ge=10, le=1000)
     brightness: int = Field(..., ge=10, le=1000)
-    dps: Optional[str] = Field("", description="Optional DPS string for custom payload")
+    dps: Optional[str] = Field(default=None, description="Optional DPS string for custom payload")
 
+    # pylint: disable=no-self-argument
     @field_validator("color")
-    def validate_rgb(cls, value):
+    def validate_rgb(cls, value: List[int]) -> List[int]:
+        """Validate that the color is a valid RGB value."""
         if len(value) != 3:
             raise ValueError("RGB color must have exactly 3 values")
 
         for channel in value:
-            if not isinstance(channel, int):
-                raise ValueError("RGB values must be integers")
             if not 0 <= channel <= 255:
                 raise ValueError("RGB values must be between 0 and 255")
 

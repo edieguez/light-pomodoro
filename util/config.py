@@ -5,7 +5,8 @@ from argparse import ArgumentParser, Namespace
 import yaml
 from tinytuya import BulbDevice
 
-from notification.notification import NoOpBulbNotifier, SmartBulbNotifier, DesktopNotifier, NoOpDesktopNotifier
+from notification.notification import (NoOpBulbNotifier, SmartBulbNotifier,
+                                       DesktopNotifier, NoOpDesktopNotifier)
 from pomodoro.models import SmartBulbConfig, PomodoroConfig, ThemeConfig
 
 
@@ -63,7 +64,10 @@ def parse_args() -> Namespace:
         metavar="BULB",
         type=str,
         default=None,
-        help="Show status for the given smart bulb and exit. When present, no other arguments are allowed.",
+        help=(
+            "Show status for the given smart bulb and exit. "
+            "When present, no other arguments are allowed."
+        ),
     )
 
     args = parser.parse_args()

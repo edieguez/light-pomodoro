@@ -1,5 +1,4 @@
 """Module for sending notifications for Pomodoro timer events"""
-import json
 import os
 
 from notifypy import Notify
@@ -39,9 +38,7 @@ class SmartBulbNotifier:
 
     def _set_dps_payload(self, phase_color: ThemeColor) -> None:
         payload: dict[str, object] = payload_utils.generate_payload(
-            phase_color.color[0],  # Red
-            phase_color.color[1],  # Green
-            phase_color.color[2],  # Blue
+            phase_color.color,
             phase_color.saturation,
             phase_color.brightness,
             phase_color.dps
@@ -55,19 +52,15 @@ class NoOpBulbNotifier:
 
     def work_notification(self) -> None:
         """Do nothing for work notification"""
-        pass
 
     def short_break_notification(self) -> None:
         """Do nothing for short break notification"""
-        pass
 
     def long_break_notification(self) -> None:
         """Do nothing for long break notification"""
-        pass
 
     def turn_off(self) -> None:
         """Do nothing for turning off the bulb"""
-        pass
 
 
 class DesktopNotifier:
@@ -84,21 +77,21 @@ class DesktopNotifier:
     def work_notification(self) -> None:
         """Send a notification for the start of a work session"""
         self.notification.title = "Pomodoro Timer"
-        self.notification.message = f"🍅 Work session started!"
+        self.notification.message = "🍅 Work session started!"
 
         self.notification.send()
 
     def short_break_notification(self) -> None:
         """Send a notification for the start of a short break"""
         self.notification.title = "Pomodoro Timer"
-        self.notification.message = f"☕ Short break started!"
+        self.notification.message = "☕️ Short break started!"
 
         self.notification.send()
 
     def long_break_notification(self) -> None:
         """Send a notification for the start of a long break"""
         self.notification.title = "Pomodoro Timer"
-        self.notification.message = f"🌴 Long break started!"
+        self.notification.message = "🌴 Long break started!"
 
         self.notification.send()
 
@@ -108,12 +101,9 @@ class NoOpDesktopNotifier:
 
     def work_notification(self) -> None:
         """Do nothing for work notification"""
-        pass
 
     def short_break_notification(self) -> None:
         """Do nothing for short break notification"""
-        pass
 
     def long_break_notification(self) -> None:
         """Do nothing for long break notification"""
-        pass
