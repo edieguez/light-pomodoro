@@ -34,7 +34,7 @@ class SmartBulbNotifier:
 
     def turn_off(self) -> None:
         """Turn off the smart bulb"""
-        self.smart_bulb.turn_off()
+        self.smart_bulb.set_status(False, 20)
 
     def _set_dps_payload(self, phase_color: ThemeColor) -> None:
         payload: dict[str, object] = payload_utils.generate_payload(
