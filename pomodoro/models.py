@@ -23,11 +23,12 @@ class PomodoroConfig(BaseModel):
     cycles_before_long_break: int = Field(..., gt=0)
 
 
-class ThemeColor(BaseModel):
+class PhaseColor(BaseModel):
     """Model representing a color in a theme configuration."""
     color: List[int] = Field(..., description="RGB color [0-255, 0-255, 0-255]")
-    saturation: int = Field(..., ge=10, le=1000)
-    brightness: int = Field(..., ge=10, le=1000)
+    saturation: int = Field(..., ge=10, le=1_000)
+    brightness: int = Field(..., ge=10, le=1_000)
+    temperature: int = Field(..., ge=0, le=1_000)
     dps: Optional[str] = Field(default=None, description="Optional DPS string for custom payload")
 
     # pylint: disable=no-self-argument
@@ -47,6 +48,6 @@ class ThemeColor(BaseModel):
 class ThemeConfig(BaseModel):
     """Model representing a theme configuration for smart bulb colors."""
     name: str = Field(..., min_length=1, max_length=32)
-    work: ThemeColor
-    short_break: ThemeColor
-    long_break: ThemeColor
+    work: PhaseColor
+    short_break: PhaseColor
+    long_break: PhaseColor

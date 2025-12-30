@@ -5,7 +5,7 @@ from notifypy import Notify
 from tinytuya import BulbDevice
 
 import util.payload as payload_utils
-from pomodoro.models import SmartBulbConfig, ThemeConfig, ThemeColor
+from pomodoro.models import SmartBulbConfig, ThemeConfig, PhaseColor
 
 
 class SmartBulbNotifier:
@@ -36,13 +36,8 @@ class SmartBulbNotifier:
         """Turn off the smart bulb"""
         self.smart_bulb.set_status(False, 20)
 
-    def _set_dps_payload(self, phase_color: ThemeColor) -> None:
-        payload: dict[str, object] = payload_utils.generate_payload(
-            phase_color.color,
-            phase_color.saturation,
-            phase_color.brightness,
-            phase_color.dps
-        )
+    def _set_dps_payload(self, phase_color: PhaseColor) -> None:
+        payload: dict[str, object] = payload_utils.generate_payload(phase_color)
 
         self.smart_bulb.set_multiple_values(payload)
 

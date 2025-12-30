@@ -28,39 +28,48 @@ themes:
       color: [ 255, 255, 255 ]
       saturation: 1000
       brightness: 1000
+      temperature: 1000
     short_break:
       color: [ 0, 0, 0 ]
       saturation: 1000
       brightness: 1000
+      temperature: 1000
     long_break:
       color: [ 0, 0, 0 ]
       saturation: 1000
       brightness: 1000
+      temperature: 1000
   - name: anime
     work:
       color: [ 0, 0, 0 ]
       saturation: 1000
       brightness: 1000
+      temperature: 1000
     short_break:
       color: [ 255, 255, 255 ]
       saturation: 1000
       brightness: 1000
+      temperature: 1000
     long_break:
       color: [ 255, 255, 255 ]
       saturation: 1000
       brightness: 1000
+      temperature: 1000
   - name: cozzy
     work:
       color: [ 255, 255, 0 ]
       saturation: 600
       brightness: 300
+      temperature: 1000
     short_break:
       duration: 5
       color: [ 0, 0, 0 ]
       saturation: 1000
       brightness: 1000
+      temperature: 1000
     long_break:
       duration: 15
       color: [ 0, 0, 0 ]
       saturation: 1000
       brightness: 1000
+      temperature: 1000

@@ -1,11 +1,16 @@
 """Functions to generate DPS raw payloads"""
 import json
 
+from pomodoro.models import PhaseColor
 
-def generate_payload(rgb: list[int], saturation: int,
-                     brightness: int, dps: str) -> dict[str, object]:
+
+def generate_payload(phase_color: PhaseColor) -> dict[str, object]:
     """Generate payload for setting smart bulb color based on RGB values."""
-    r, g, b = rgb
+    r, g, b = phase_color.color
+    saturation = phase_color.saturation
+    brightness = phase_color.brightness
+    temperature = phase_color.temperature
+    dps = phase_color.dps
 
     if dps:
         return json.loads(dps)
@@ -15,7 +20,8 @@ def generate_payload(rgb: list[int], saturation: int,
         return {
             "20": True,
             "21": "white",
-            "22": brightness
+            "22": brightness,
+            "23": temperature,
         }
 
     if r == g == b == 0:
